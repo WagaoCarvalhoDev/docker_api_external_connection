@@ -3,6 +3,13 @@ import 'dart:io';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
+import 'package:http/http.dart' as http;
+
+Future fetch() async{
+  var url = Uri.parse('https://jsonplaceholder.typicode.com/todos/1');
+  var response = await http.get(url);
+  print(response.body) ;
+}
 
 // Configure routes.
 final _router = Router()
@@ -10,6 +17,7 @@ final _router = Router()
   ..get('/echo/<message>', _echoHandler);
 
 Response _rootHandler(Request req) {
+  fetch();
   return Response.ok('Hello, World!\n');
 }
 
