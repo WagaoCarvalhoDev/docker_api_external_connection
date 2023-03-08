@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:shelf/shelf.dart';
@@ -5,10 +6,16 @@ import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
 import 'package:http/http.dart' as http;
 
-Future fetch() async{
-  var url = Uri.parse('https://jsonplaceholder.typicode.com/todos/1');
+Future<String> fetch() async {
+  var url = Uri.parse('https://randomuser.me/api');
   var response = await http.get(url);
-  print(response.body) ;
+
+  if (response.statusCode == 200) {
+    var jsonResponse = jsonDecode(response.body);
+    return jsonResponse.toString();
+  } else {
+    throw Error();
+  }
 }
 
 // Configure routes.
@@ -16,9 +23,9 @@ final _router = Router()
   ..get('/', _rootHandler)
   ..get('/echo/<message>', _echoHandler);
 
-Response _rootHandler(Request req) {
-  fetch();
-  return Response.ok('Hello, World!\n');
+Future<Response> _rootHandler(Request req) async {
+  final teste = await fetch();
+  return Response.ok(teste);
 }
 
 Response _echoHandler(Request request) {
